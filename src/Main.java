@@ -1,4 +1,5 @@
 import java.util.*;
+//Humberto Hernández Trejo
 
 public class Main {
     public static void main(String[] args) {
@@ -14,22 +15,24 @@ public class Main {
         Model bestModel = null;
         double bestRSquared = -1;
 
+        // Bucle para realizar dos segmentaciones del dataset y seleccionar el mejor modelo
         for (int i = 0; i < 2; i++) {
             System.out.println("Segmentación " + (i + 1) + ":");
 
-            // Dividir el dataset en 70% - 30% de forma aleatoria
+            // Conjuntos para llenar de forma aleatoria
             DataSet trainSet = new DataSet(new ArrayList<>(), new ArrayList<>());
             DataSet testSet = new DataSet(new ArrayList<>(), new ArrayList<>());
 
+            // Dividir el dataset en 70% de entrenamiento y 30% de prueba
             splitDataSet(batchSize, efficiency, trainSet, testSet, 0.7);
 
             // Crear el modelo de regresión cuadrática para el conjunto de entrenamiento
             QuadraticRegression regression = new QuadraticRegression(trainSet);
-            regression.calculateParameters();
+            regression.calculateParameters();// Calcular los parámetros del modelo (Beta0, Beta1, Beta2)
             Model currentModel = regression.getModel();
 
-            // Imprimir el modelo de regresión
-            System.out.println("Curva de Regresión: " + currentModel);
+            // Imprimir la curva de regresión cuadrática
+            System.out.println("\nCurva de Regresión: " + currentModel);
 
             // Calcular el coeficiente de determinación para el conjunto de prueba
             double rSquared = regression.calculateRSquared(testSet.getX(), testSet.getY());
@@ -38,26 +41,26 @@ public class Main {
 
             // Seleccionar el mejor modelo
             if (rSquared > bestRSquared) {
+                // Si el R² calculado es mejor que el mejor encontrado hasta ahora, actualizar el mejor modelo
                 bestRSquared = rSquared;
                 bestModel = currentModel;
             }
         }
 
-        // Imprimir el mejor modelo
+        // Imprimir el mejor modelo encontrado y su coeficiente de determinación más alto
         System.out.println("Mejor modelo basado en R²: " + bestModel);
         System.out.println("Coeficiente de Determinación más alto (R²): " + bestRSquared);
 
-        // Calcular e imprimir la correlación
+        // Calcular e imprimir la correlación entre el tamaño del lote y la eficiencia
         double correlationValue = DiscreteMaths.correlation(batchSize, efficiency);
         System.out.println("Correlación: " + correlationValue);
-
         System.out.println("");
 
         // Predicciones (usando valores conocidos y desconocidos)
         double[] testBatchSizes = {30.0, 45.0, 108.0, 50.0, 75.0};
         System.out.println("Predicciones con el mejor modelo:");
         for (double batch : testBatchSizes) {
-            double predictedEfficiency = bestModel.predict(batch);
+            double predictedEfficiency = bestModel.predict(batch);// Realizar predicción
             System.out.println("Batch Size " + batch + " -> Machine Efficiency (predicha): " + predictedEfficiency);
         }
     }
@@ -69,13 +72,18 @@ public class Main {
         for (int i = 0; i < dataSize; i++) {
             indices.add(i);
         }
+        // Mezclar aleatoriamente los índices para una segmentación aleatoria
         Collections.shuffle(indices);
 
         int trainSize = (int) (dataSize * trainPercentage);
+
+        // Llenar el conjunto de entrenamiento con el 70% del dataset mezclado
         for (int i = 0; i < trainSize; i++) {
             trainSet.getX().add(x.get(indices.get(i)));
             trainSet.getY().add(y.get(indices.get(i)));
         }
+
+        // Llenar el conjunto de prueba con el 30% restante del dataset mezclado
         for (int i = trainSize; i < dataSize; i++) {
             testSet.getX().add(x.get(indices.get(i)));
             testSet.getY().add(y.get(indices.get(i)));

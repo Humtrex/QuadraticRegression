@@ -1,4 +1,5 @@
 import java.util.List;
+//Humberto Hernández Trejo
 
 public class DataSet {
     private List<Double> x;
