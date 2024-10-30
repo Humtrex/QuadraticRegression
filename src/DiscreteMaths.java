@@ -5,8 +5,11 @@ public class DiscreteMaths {
 
     // Método para calcular la suma de los elementos de una lista de números decimales (Double)
     public static double sum(List<Double> values) {
-        // API de Streams para convertir los valores a double y calcular la suma
-        return values.stream().mapToDouble(Double::doubleValue).sum();
+        double total = 0.0;
+        for (int i = 0; i < values.size(); i++) {
+            total += values.get(i);
+        }
+        return total;
     }
 
     // Método para calcular la suma de los productos de dos listas de números decimales (Double)
@@ -21,8 +24,12 @@ public class DiscreteMaths {
 
     // Método para calcular la suma de los cuadrados de los elementos de una lista de números decimales (Double)
     public static double sumOfSquares(List<Double> values) {
-        // API de Streams para mapear cada valor al cuadrado y luego calcular la suma
-        return values.stream().mapToDouble(x -> x * x).sum();
+        double total = 0.0;
+        for (int i = 0; i < values.size(); i++) {
+            double value = values.get(i);
+            total += value * value;
+        }
+        return total;
     }
 
     // Método para calcular la correlación entre dos listas de números decimales (Double)
